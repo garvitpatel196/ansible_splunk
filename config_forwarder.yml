@@ -1,0 +1,18 @@
+---
+ - hosts: tag_Type_fwd
+   name: configure forwarder
+   become_user: splunk
+   gather_facts: false
+   user: ubuntu
+   tags:
+    - configure_fwd
+   tasks:
+    - name: set up forwader
+      command: /opt/splunk/bin/splunk add forward-server {{ hostvars[inventory_hostname]['groups']['tag_Type_idx'][0] }}:9997
+      wait: true
+    - name: set up forwader
+      command: /opt/splunk/bin/splunk add monitor /var/log
+      wait: true
+    - name: splunk restart
+      command: /opt/splunk/bin/splunk restart
+      wait: true

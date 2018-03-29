@@ -1,0 +1,21 @@
+---
+ - hosts: tag_Type_idx
+   name: configure indexer cluster peers
+   become_user: splunk
+   gather_facts: false
+   user: ubuntu
+   tags:
+    - configure_idx_peer
+   tasks:
+    - name: set up indexer
+      command: /opt/splunk/bin/splunk edit cluster-config -mode slave -master_uri https://{{hostvars[inventory_hostname]["groups"]["tag_Type_cm"][0]}}:8089 -replication_port 9887 -secret splunk1234 -cluster_label cluster1 -auth admin:admin
+      wait: true
+    - name: set up indexer-listener
+      command: /opt/splunk/bin/splunk enable listen 9997 -auth admin:admin
+      wait: true
+    - name: set up disk space
+      command: /opt/splunk/bin/splunk set minfreemb 50 -auth admin:admin
+      wait: true
+    - name: splunk restart
+      command: /opt/splunk/bin/splunk restart
+      wait: true

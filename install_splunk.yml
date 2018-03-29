@@ -1,0 +1,46 @@
+---
+ - hosts: localhost
+   name: Refresh Cache
+   become: true
+   gather_facts: false
+   tasks: 
+    - command: /etc/ansible/ec2.py --refresh-cache
+      wait: true
+    - meta: refresh_inventory
+    - debug:
+       var: hostvars
+   tags:
+    - refresh
+ - hosts: tag_Grp_stack1
+   name: dpkg splunk
+   become: true
+   gather_facts: false
+   user: ubuntu
+   tags:
+    - dpkg
+   tasks:
+    - command: dpkg -i splunk-7.0.1-2b5b15c4ee89-linux-2.6-amd64.deb
+      wait: true
+
+ - hosts: tag_Grp_stack1
+   name: Start Splunk and Change password
+   become: true
+   gather_facts: false
+   user: ubuntu
+   tasks:
+    - name: splunk start
+      command: /opt/splunk/bin/splunk start --accept-license
+      wait: true
+      retries: 3
+      delay: 3
+      register: result
+      until: result.rc == 0
+      become_user: splunk
+      tags:
+       - start_splunk
+    - name: set username and password
+      command: /opt/splunk/bin/splunk edit user admin -password admin -auth admin:changeme
+      wait: true
+      become_user: splunk
+      tags:
+       - start_splunk 

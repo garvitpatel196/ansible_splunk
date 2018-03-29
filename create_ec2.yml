@@ -1,0 +1,51 @@
+---
+ - hosts: localhost
+   name: create ec2 instance
+   become: true
+   connection: local
+   gather_facts: false
+   tags:
+     - create_ec2
+   vars:
+    key_name: garvit-test
+    instance_type: t2.micro
+    image: ami-8df9cce8
+    group: default
+    region: us-east-2
+   vars_prompt:
+    - name: no_sh
+      prompt: Enter Number of Search Heads
+      private: no
+    - name: no_idx
+      prompt: Enter Number of Indexers
+      private: no
+   tasks:
+    - include_tasks: ec2_task.yml
+      vars:
+       name: "{{ item }}"
+       type: sh
+       count: "{{ no_sh }}"
+      with_sequence: start=1 end={{ no_sh|int }}
+
+    - include_tasks: ec2_task.yml
+      vars:
+       name: "{{ item }}"
+       type: idx
+       count: "{{ no_idx }}"
+      with_sequence: start=1 end={{ no_idx|int }}
+      
+    - include_tasks: wait_for_ssh.yml
+
+    - include_tasks: ec2_task.yml
+      vars:
+       name: "01"
+       type: cm
+       count: 1
+
+    - include_tasks: ec2_task.yml
+      vars:
+       name: "01"
+       type: fwd
+       count: 1
+    - include_tasks: wait_for_ssh.yml
+

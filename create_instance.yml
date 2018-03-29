@@ -1,0 +1,16 @@
+---    
+- ec2:
+   region: "{{ region }}"
+   image: "{{ image_id }}"
+   key_name: "{{ key_name }}"
+   instance_type: "{{ instance_type }}"
+   instance_tags:
+    Name: "{{ instance_tag_name }}"
+   group: "{{ security_group_name }}"
+   wait: true
+   count: "{{ number_of_instance }}"
+  register: ec2
+- add_host: hostname={{ec2.instances[0].public_ip}} groupname=CM
+- add_host: hostname={{ec2.instances[1].public_ip}} groupname=PEER
+- set_fact: cm="[ '{{ ec2.instances[0].public_ip }}' ]"
+   

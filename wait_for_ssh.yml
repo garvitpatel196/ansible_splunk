@@ -1,0 +1,4 @@
+---
+  - local_action: wait_for host={{ec2.instances[0].public_ip}} port=22 delay=3 timeout=3600
+  - meta: refresh_inventory
+    wait: true

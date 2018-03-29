@@ -1,0 +1,22 @@
+---
+ - hosts: tag_Name_sh1
+   name: configure sh
+   become_user: splunk
+   user: ubuntu
+   gather_facts: false
+   vars:
+    ips: ""
+    port: ":8089,"
+   tags:
+    - configure_captain
+   tasks:
+    - set_fact:
+        ips: "{{ ips }}https://{{ '%s' | format(item) }}{{ port }}"
+      with_items: 
+        - "{{ hostvars[inventory_hostname]['groups']['tag_Type_sh'] }}"
+    - set_fact:
+        ips: "{{ ips[:-1] }}"
+    - name: setup captain
+      command: "/opt/splunk/bin/splunk bootstrap shcluster-captain -servers_list ' {{ ips }} ' -auth admin:admin"
+    - name: splunk restart
+      command: "/opt/splunk/bin/splunk restart"
