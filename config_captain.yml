@@ -1,7 +1,7 @@
 ---
  - hosts: tag_Name_sh1
    name: configure sh
-   become_user: splunk
+   become: true
    user: ubuntu
    gather_facts: false
    vars:
@@ -18,5 +18,9 @@
         ips: "{{ ips[:-1] }}"
     - name: setup captain
       command: "/opt/splunk/bin/splunk bootstrap shcluster-captain -servers_list ' {{ ips }} ' -auth admin:admin"
+      become_user: splunk
+
     - name: splunk restart
       command: "/opt/splunk/bin/splunk restart"
+      become_user: splunk
+
