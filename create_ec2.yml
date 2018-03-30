@@ -27,6 +27,8 @@
        count: "{{ no_sh }}"
       with_sequence: start=1 end={{ no_sh|int }}
 
+    - include_tasks: wait_for_ssh.yml
+
     - include_tasks: ec2_task.yml
       vars:
        name: "{{ item }}"
@@ -41,6 +43,8 @@
        name: "01"
        type: cm
        count: 1
+
+    - include_tasks: wait_for_ssh.yml
 
     - include_tasks: ec2_task.yml
       vars:
