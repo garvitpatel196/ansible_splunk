@@ -1,7 +1,7 @@
 ---
  - hosts: tag_Type_cm
    name: configure deployer
-   become_user: splunk
+   become: true
    gather_facts: false
    user: ubuntu
    tags:
@@ -9,7 +9,11 @@
    tasks:
     - name: set up deployer
       command: /opt/splunk/bin/splunk edit shcluster-config -secret splunk123 -shcluster_label sh -auth admin:admin 
-      wait: trues
+      wait: true
+      become_user: splunk
+
     - name: splunk restart
       command: /opt/splunk/bin/splunk restart
       wait: true
+      become_user: splunk
+
