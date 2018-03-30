@@ -21,6 +21,10 @@
    tasks:
     - command: dpkg -i splunk-7.0.1-2b5b15c4ee89-linux-2.6-amd64.deb
       wait: true
+      register: task_result
+      until: task_result.rc == 0
+      retries: 5
+      delay: 10
 
  - hosts: tag_Grp_stack1
    name: Start Splunk and Change password
