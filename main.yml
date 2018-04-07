@@ -4,6 +4,6 @@
  - import_playbook: config_cm.yml
  - import_playbook: config_indexer_peer.yml
  - import_playbook: config_sh.yml
- - import_playbook: config_captain.yml
- - import_playbook: config_deployer.yml
+# - import_playbook: config_captain.yml
+# - import_playbook: config_deployer.yml
  - import_playbook: config_forwarder.yml
