@@ -8,16 +8,20 @@
     - configure_sh
    tasks:
     - name: set up Search head
-      command: "/opt/splunk/bin/splunk init shcluster-config -auth admin:admin -mgmt_uri https://{{ hostvars[inventory_hostname]['ansible_host'] }}:8089 -replication_port 9887 -replication_factor 1 -conf_deploy_fetch_url https://{{ hostvars[inventory_hostname]['groups']['tag_Type_cm'][0] }}:8089 -secret splunk1234 -shcluster_label sh -auth admin:admin"
+      command: /opt/splunk/bin/splunk edit cluster-config -mode searchhead -master_uri https://{{ hostvars[inventory_hostname]['groups']['tag_Type_cm'][0] }}:8089 -secret splunk1234
+#      command: "/opt/splunk/bin/splunk init shcluster-config -auth admin:admin -mgmt_uri https://{{ hostvars[inventory_hostname]['ansible_host'] }}:8089 -replication_port 9887 -replication_factor 1 -conf_deploy_fetch_url https://{{ hostvars[inventory_hostname]['groups']['tag_Type_cm'][0] }}:8089 -secret splunk1234 -shcluster_label sh -auth admin:admin"
       wait: true
+      become: true
       become_user: splunk
 
     - name: set up disk space
       command: /opt/splunk/bin/splunk set minfreemb 50 -auth admin:admin
       wait: true
+      become: true
       become_user: splunk
 
     - name: splunk restart
       command: /opt/splunk/bin/splunk restart
       wait: true
+      become: true
       become_user: splunk

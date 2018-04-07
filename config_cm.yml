@@ -10,8 +10,10 @@
     - name: set up cluster master
       command: /opt/splunk/bin/splunk edit cluster-config -mode master -replication_factor 3 -search_factor 3 -secret splunk1234 -cluster_label cluster1 -auth admin:admin
       wait: true
+      become: true
       become_user: splunk
     - name: splunk restart
       command: /opt/splunk/bin/splunk restart
       wait: true
+      become: true
       become_user: splunk
